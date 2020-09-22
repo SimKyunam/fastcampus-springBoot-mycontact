@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class PersonRepositoryTest {
 
     @Autowired
@@ -24,7 +26,6 @@ class PersonRepositoryTest {
     void crud(){
         Person person = new Person();
         person.setName("john");
-        person.setAge(10);
         person.setBloodType("A");
 
         personRepository.save(person);
@@ -33,15 +34,10 @@ class PersonRepositoryTest {
 
         assertThat(people.size()).isEqualTo(1);
         assertThat(people.get(0).getName()).isEqualTo("john");
-        assertThat(people.get(0).getAge()).isEqualTo(10);
+//        assertThat(people.get(0).getAge()).isEqualTo(10);
         assertThat(people.get(0).getBloodType()).isEqualTo("A");
 
         //personRepository.deleteAll();
-    }
-
-    @Test
-    void constructorTest(){
-        Person person = new Person("martin", 10, "A");
     }
 
     @Test
