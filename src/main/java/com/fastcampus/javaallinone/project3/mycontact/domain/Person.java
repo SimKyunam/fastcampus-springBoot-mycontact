@@ -32,11 +32,6 @@ public class Person {
 
     private String hobby;
 
-    @NonNull
-    @NotEmpty
-    @Column(nullable = false)
-    private String bloodType;
-
     @Embedded
     @Valid
     private Birthday birthday;
@@ -45,35 +40,30 @@ public class Person {
 
     private String address;
 
-    @ToString.Exclude
     private String phoneNumber;
 
     @ColumnDefault("0")
     private boolean deleted;
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
-    private Block block;
 
     public void set(PersonDto personDto){
         if(!StringUtils.isEmpty(personDto.getHobby())){
             this.setHobby(personDto.getHobby());
         }
 
-        if(!StringUtils.isEmpty(personDto.getBloodType())){
-            this.setHobby(personDto.getBloodType());
-        }
-
         if(!StringUtils.isEmpty(personDto.getAddress())){
-            this.setHobby(personDto.getAddress());
+            this.setAddress(personDto.getAddress());
         }
 
         if(!StringUtils.isEmpty(personDto.getJob())){
-            this.setHobby(personDto.getJob());
+            this.setJob(personDto.getJob());
         }
 
         if(!StringUtils.isEmpty(personDto.getPhoneNumber())){
-            this.setHobby(personDto.getPhoneNumber());
+            this.setPhoneNumber(personDto.getPhoneNumber());
+        }
+
+        if(personDto.getBirthday() != null){
+            this.setBirthday(Birthday.of(personDto.getBirthday()));
         }
     }
 
