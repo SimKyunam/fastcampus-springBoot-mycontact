@@ -2,11 +2,13 @@ package com.fastcampus.javaallinone.project3.mycontact.controller;
 
 import com.fastcampus.javaallinone.project3.mycontact.controller.dto.PersonDto;
 import com.fastcampus.javaallinone.project3.mycontact.domain.Person;
+import com.fastcampus.javaallinone.project3.mycontact.exception.RenameNotPermittedException;
 import com.fastcampus.javaallinone.project3.mycontact.repository.PersonRepository;
 import com.fastcampus.javaallinone.project3.mycontact.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -49,5 +51,10 @@ public class PersonController {
     @DeleteMapping("/{id}")
     public void deletePerson(@PathVariable Long id){
         personService.delete(id);
+    }
+
+    @ExceptionHandler(value = RenameNotPermittedException.class)
+    public ResponseEntity<String> handleRenameNotPermittedException(RenameNotPermittedException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

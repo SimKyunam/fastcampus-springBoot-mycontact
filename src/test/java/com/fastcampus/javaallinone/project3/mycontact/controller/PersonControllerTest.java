@@ -7,7 +7,6 @@ import com.fastcampus.javaallinone.project3.mycontact.repository.PersonRepositor
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,16 +16,17 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.util.NestedServletException;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.transaction.Transactional;
-
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by mileNote on 2020-09-15
@@ -52,7 +52,11 @@ class PersonControllerTest {
 
     @BeforeEach
     void beforeEach(){
-        mockMvc = MockMvcBuilders.standaloneSetup(personController).setMessageConverters(messageConverter).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(personController)
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                .setMessageConverters(messageConverter)
+                .alwaysDo(print())
+                .build();
     }
 
     @Test
@@ -98,14 +102,12 @@ class PersonControllerTest {
     void modifyPersonIfNameIsDifferent() throws Exception{
         PersonDto dto = PersonDto.of("james", "programming", "판교", LocalDate.now(), "programmer", "010-1111-2222");
 
-        assertThrows(NestedServletException.class, () ->
-            mockMvc.perform(
-                MockMvcRequestBuilders.put("/api/person/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJsonString(dto)))
-                .andDo(print())
-                .andExpect(status().isOk())
-        );
+        mockMvc.perform(
+            MockMvcRequestBuilders.put("/api/person/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJsonString(dto)))
+            .andDo(print())
+            .andExpect(status().isOk());
     }
 
     @Test
