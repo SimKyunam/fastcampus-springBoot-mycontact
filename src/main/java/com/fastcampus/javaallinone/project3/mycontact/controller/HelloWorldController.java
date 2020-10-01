@@ -6,8 +6,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloWorldController {
 
-    @GetMapping(value = "/api/helloWorld")
+    @GetMapping("/api/helloWorld")
     public String helloWorld(){
         return "Hello World";
+    }
+
+    @GetMapping("/api/helloException")
+    public String helloException(){
+        throw new RuntimeException("Hello RuntimeException");
     }
 }
